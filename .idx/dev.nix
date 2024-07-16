@@ -6,7 +6,6 @@
   # Use https://search.nixos.org/packages to find packages
   packages = [
     pkgs.nodejs_20
-    pkgs.python3
   ];
   # Sets environment variables in the workspace
   env = {};
@@ -15,29 +14,21 @@
     extensions = [
       # "vscodevim.vim"
     ];
+    workspace = {
+      # Runs when a workspace is first created with this `dev.nix` file
+      onCreate = {
+        npm-install = "npm ci --no-audit --prefer-offline --no-progress --timing";
+      };
+      # To run something each time the workspace is (re)started, use the `onStart` hook
+    };
     # Enable previews and customize configuration
     previews = {
       enable = true;
       previews = {
         web = {
-          command = ["python3" "-m" "http.server" "$PORT" "--bind" "0.0.0.0"];
+          command = ["npm" "run" "dev" "--" "--port" "$PORT"];
           manager = "web";
         };
-      };
-    };
-    # Workspace lifecycle hooks
-    workspace = {
-      # Runs when a workspace is first created
-      onCreate = {
-        # Example: install JS dependencies from NPM
-        # npm-install = "npm install";
-        # Open editors for the following files by default, if they exist:
-        default.openFiles = [ "style.css" "main.js" "index.html" ];
-      };
-      # Runs when the workspace is (re)started
-      onStart = {
-        # Example: start a background task to watch and re-build backend code
-        # watch-backend = "npm run watch-backend";
       };
     };
   };
